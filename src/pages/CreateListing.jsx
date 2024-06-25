@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Spinner from '../components/Spinner';
 import { toast } from 'react-toastify';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
@@ -93,12 +93,14 @@ function CreateListing() {
                 const storage = getStorage();
                 const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
                 const storageRef = ref(storage, filename);
-                const uploadTask = uploadBytesResumable(storage, image);
-                uploadTask.on('state_changed', 
+                const uploadTask = uploadBytesResumable(storageRef, image);
+                uploadTask.on(
+                    'state_changed', 
                     (snapshot) => {
                       // Observe state change events such as progress, pause, and resume
                       // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                      const progress = 
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                       console.log('Upload is ' + progress + '% done');
                       switch (snapshot.state) {
                         case 'paused':
@@ -138,14 +140,14 @@ function CreateListing() {
             imgUrls,
             geolocation,
             timestamp: serverTimestamp(),
+            userRef: auth.currentUser.uid,
         };
         delete formDataCopy.images;
         !formDataCopy.offer && delete formDataCopy.discountedPrice;
         delete formDataCopy.latitude;
         delete formDataCopy.longitude;
-        const myCollection = collection(db, "listings");
-        const docRef = await addDoc(myCollection, formDataCopy);
-        setLoading(false)
+        const docRef = await addDoc(collection(db, "listings"), formDataCopy);
+        setLoading(false);
         toast.success("Listing created");
         navigate(`/category/${formDataCopy.type}/${docRef.id}`);
     }
