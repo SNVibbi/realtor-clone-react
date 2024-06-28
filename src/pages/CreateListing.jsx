@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router';
 function CreateListing() {
     const navigate = useNavigate();
     const auth = getAuth()
-    const [geolocationEnable, setGeolocatioEnable] = useState(true);
+    const [geolocationEnabled, setGeolocatioEnabled] = useState(true);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         type:"rent",
@@ -69,7 +69,7 @@ function CreateListing() {
         }
         let geolocation = {};
         let location;
-        if(geolocationEnable){
+        if(geolocationEnabled){
             const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`);
             const data = await response.json()
             console.log(data)
@@ -280,7 +280,7 @@ function CreateListing() {
             required 
             className='w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600 mb-6' 
         />
-        {!geolocationEnable && (
+        {!geolocationEnabled && (
             <div className='flex space-x-6 justify-start mb-6'>
                 <div className=''>
                     <p className='text-lg font-semibold'>Latitude</p>
@@ -400,11 +400,15 @@ function CreateListing() {
                 className='w-full px-3 py-1.5 text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:bg-white focus:border-slate-600'
             />
         </div>
-        <button type='submit' className='mb-6 w-full px-7 py-3 bg-blue-600 text-white font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg active:bg-blue-800 active:shadow-lg transition duration-150 ease-out'>Create Listing</button>
+        <button 
+            type='submit' 
+            className='mb-6 w-full px-7 py-3 bg-blue-600 text-white font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg active:bg-blue-800 active:shadow-lg transition duration-150 ease-out'>
+            Create Listing
+        </button>
       </form>
     </main>
   )
-}
+};
 
 
 export default CreateListing;

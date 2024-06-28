@@ -1,5 +1,5 @@
 import { getAuth, updateProfile } from 'firebase/auth';
-import { collection, doc, getDoc, orderBy, query, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, orderBy, query, updateDoc, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
@@ -56,7 +56,7 @@ export default function Profile() {
       const listingRef = collection(db, "listings");
       const q = query(listingRef, where("userRef", "==", auth.currentUser.uid), orderBy("timestamp", "desc")
     );
-    const querySnap = await getDoc(q);
+    const querySnap = await getDocs(q);
     let listings = [];
     querySnap.forEach((doc) => {
       return listings.push({
@@ -106,7 +106,7 @@ export default function Profile() {
           <>
             <h2 className='text-2xl text-center font-semibold'>My Listings</h2>
             <ul>
-              {listings.map((listing)>(
+              {listings.map((listing)=>(
                 <ListingItem 
                   key={listing.id} 
                   id={listing.id} 
